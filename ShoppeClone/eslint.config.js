@@ -1,66 +1,41 @@
-import path from "path";
-import eslintPluginReact from "eslint-plugin-react";
-import eslintPluginReactHooks from "eslint-plugin-react-hooks";
-import eslintPluginImport from "eslint-plugin-import";
-import eslintPluginJsxA11y from "eslint-plugin-jsx-a11y";
-import eslintPluginTs from "@typescript-eslint/eslint-plugin";
-import parserTs from "@typescript-eslint/parser";
-import prettierPlugin from "eslint-plugin-prettier";
-import eslintConfigPrettier from "eslint-config-prettier";
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
+import eslint from '@eslint/js'
+import { globalIgnores } from 'eslint/config'
 
-export default [
+import tsParser from '@typescript-eslint/parser'
+import pluginReact from 'eslint-plugin-react'
+
+export default tseslint.config([
+  globalIgnores(['dist', 'node_modules']),
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      eslint.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite
+    ],
     languageOptions: {
-      parser: parserTs,
-      parserOptions: {
-        sourceType: "module",
-        ecmaVersion: "latest",
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parser: tsParser
     },
     plugins: {
-      react: eslintPluginReact,
-      "react-hooks": eslintPluginReactHooks,
-      import: eslintPluginImport,
-      "jsx-a11y": eslintPluginJsxA11y,
-      "@typescript-eslint": eslintPluginTs,
-      prettier: prettierPlugin,
+      react: pluginReact
+    },
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-no-target-blank': 'warn'
     },
     settings: {
       react: {
-        version: "detect",
-      },
-      "import/resolver": {
-        node: {
-          paths: [path.resolve()],
-          extensions: [".js", ".jsx", ".ts", ".tsx"],
-        },
-      },
-    },
-    rules: {
-      "react/react-in-jsx-scope": "off",
-      "react/jsx-no-target-blank": "warn",
-      "prettier/prettier": [
-        "warn",
-        {
-          arrowParens: "always",
-          semi: false,
-          trailingComma: "none",
-          tabWidth: 2,
-          endOfLine: "auto",
-          useTabs: false,
-          singleQuote: true,
-          printWidth: 120,
-          jsxSingleQuote: true,
-        },
-      ],
-    },
-  },
-  eslintConfigPrettier,
-  {
-    ignores: ["node_modules", "dist", "build"],
-  },
-];
+        version: 'detect' // Automatically detect React version
+      }
+    }
+  }
+])
