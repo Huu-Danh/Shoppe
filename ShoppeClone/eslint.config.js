@@ -8,6 +8,11 @@ import { globalIgnores } from 'eslint/config'
 
 import tsParser from '@typescript-eslint/parser'
 import pluginReact from 'eslint-plugin-react'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export default tseslint.config([
   globalIgnores(['dist', 'node_modules']),
@@ -35,6 +40,12 @@ export default tseslint.config([
     settings: {
       react: {
         version: 'detect' // Automatically detect React version
+      },
+      'import/resolver': {
+        node: {
+          paths: [path.resolve(__dirname, '')],
+          extensions: ['.js', '.jsx', '.ts', '.tsx']
+        }
       }
     }
   }
