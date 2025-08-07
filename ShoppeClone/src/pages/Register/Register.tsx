@@ -7,6 +7,8 @@ import Input from 'src/components/Input'
 import { schema, type Schema } from 'src/utils/rules'
 import { registerAccount } from 'src/apis/auth.api'
 import { omit } from 'lodash'
+import { isAxiosErrorHttpStatusCode } from 'src/utils/ultils'
+import type { ResponseApi } from 'src/types/ultil.type'
 
 type FormData = Schema
 
@@ -14,6 +16,7 @@ export default function Register() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
@@ -26,6 +29,19 @@ export default function Register() {
       registerAccountMutaion.mutate(body, {
         onSuccess: (data) => {
           console.log(data)
+        },
+        onError: (error) => {
+          if (isAxiosErrorHttpStatusCode<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+            const formError = error.response?.data.data
+            if (formError) {
+              Object.keys(formError).forEach((key) => {
+                setError(key as keyof Omit<FormData, 'confirm_password'>, {
+                  message: formError[key as keyof Omit<FormData, 'confirm_password'>],
+                  type: 'Server'
+                })
+              })
+            }
+          }
         }
       })
     },
