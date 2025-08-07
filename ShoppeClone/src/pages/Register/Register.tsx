@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
 import Input from 'src/components/Input'
 import { schema, type Schema } from 'src/utils/rules'
+import { registerAccount } from 'src/apis/auth.api'
+import { omit } from 'lodash'
 
 type FormData = Schema
 
@@ -10,18 +14,22 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors }
   } = useForm<FormData>({ resolver: yupResolver(schema) })
+
+  const registerAccountMutaion = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
+  })
   const onSubmit = handleSubmit(
     (data) => {
-      console.log(data)
+      const body = omit(data, ['confirm_password'])
+      registerAccountMutaion.mutate(body, {
+        onSuccess: (data) => {
+          console.log(data)
+        }
+      })
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (data) => {
-      const password = getValues('password')
-      console.log(password)
-    }
+    (data) => {}
   )
 
   return (
