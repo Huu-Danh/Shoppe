@@ -1,7 +1,9 @@
 @import 'tailwindcss';
 @theme {
   --color-orange: #ee4d2d;
+  --color-orange-shope: linearGradient(-180deg, #f53d2d, #f63);
 }
+
 html {
   height: 100%;
   line-height: 1.2;
