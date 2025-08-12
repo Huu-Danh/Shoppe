@@ -1,15 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { login } from 'src/apis/auth.api'
 import Input from 'src/components/Input'
-import type { ResponseApi } from 'src/types/ultil.type'
+import { AppContext } from 'src/contexts/app.context'
+import type { ErrorResponse } from 'src/types/ultil.type'
 import { loginSchema, type LoginSchema } from 'src/utils/rules'
 import { isAxiosErrorHttpStatusCode } from 'src/utils/ultils'
 
 type FormData = LoginSchema
 export default function Login() {
+  const { setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     register,
@@ -24,11 +28,12 @@ export default function Login() {
   const onSubmit = handleSubmit(
     (data) => {
       loginMatation.mutate(data, {
-        onSuccess: (data) => {
-          console.log(data)
+        onSuccess: () => {
+          setIsAuthenticated(true)
+          navigate('/')
         },
         onError: (error) => {
-          if (isAxiosErrorHttpStatusCode<ResponseApi<FormData>>(error)) {
+          if (isAxiosErrorHttpStatusCode<ErrorResponse<FormData>>(error)) {
             const formError = error.response?.data.data
             if (formError) {
               Object.keys(formError).forEach((key) => {
