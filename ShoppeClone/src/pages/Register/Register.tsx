@@ -11,6 +11,7 @@ import { isAxiosErrorHttpStatusCode } from 'src/utils/ultils'
 import type { ErrorResponse } from 'src/types/ultil.type'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
+import Button from 'src/components/Button'
 
 type FormData = Schema
 
@@ -85,12 +86,14 @@ export default function Register() {
                 placeholder='Confirm password'
               />
               <div className='mt-2'>
-                <button
+                <Button
                   type='submit'
-                  className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm:hover:bg-red-600 rounded'
+                  isLoading={registerAccountMutaion.isPending}
+                  disabled={registerAccountMutaion.isPending}
+                  className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm:hover:bg-red-600 rounded flex justify-center items-center'
                 >
-                  Đăng ký
-                </button>
+                  <span className='ml-2'>Đăng ký</span>
+                </Button>
               </div>
               <div className='flex items-center justify-center mt-8'>
                 <div className='text-gray-400'>Bạn đã có tài khoản?</div>
