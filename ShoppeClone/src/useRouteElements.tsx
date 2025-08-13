@@ -7,22 +7,22 @@ import MainLayout from './layouts/MainLayuout'
 import Profile from './pages/Profile'
 import { useContext } from 'react'
 import { AppContext } from './contexts/app.context'
-
+import path from './constants/path'
 // eslint-disable-next-line react-refresh/only-export-components
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
-  return isAuthenticated ? <Outlet /> : <Navigate to={'/login'} />
+  return isAuthenticated ? <Outlet /> : <Navigate to={path.login} />
 }
 // eslint-disable-next-line react-refresh/only-export-components
 function RejectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
-  return !isAuthenticated ? <Outlet /> : <Navigate to={'/'} />
+  return !isAuthenticated ? <Outlet /> : <Navigate to={path.home} />
 }
 export default function useRouteElements() {
   return (
     <Routes>
       <Route
-        path='/'
+        path={path.home}
         index
         element={
           <MainLayout>
@@ -32,7 +32,7 @@ export default function useRouteElements() {
       />
       <Route element={ProtectedRoute()}>
         <Route
-          path='/Profile'
+          path={path.profile}
           element={
             <MainLayout>
               <Profile />
@@ -42,7 +42,7 @@ export default function useRouteElements() {
       </Route>
       <Route element={RejectedRoute()}>
         <Route
-          path='/login'
+          path={path.login}
           element={
             <RegisterLayout>
               <Login />
@@ -50,7 +50,7 @@ export default function useRouteElements() {
           }
         />
         <Route
-          path='/register'
+          path={path.register}
           element={
             <RegisterLayout>
               <Register />
