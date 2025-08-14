@@ -87,13 +87,13 @@ export default function AsideFilter() {
       <div className='bg-gray-300 h-[1px] my-4'></div>
       <div className='text-sm'>Đánh giá</div>
       <ul className='my-3'>
-        <li py-1 pl-2>
+        <li className='py-1 pl-2'>
           <Link to={path.home} className='flex items-center text-sm'>
             {Array(5)
               .fill(0)
               .map((_, index) => (
-                <div>
-                  <svg viewBox='0 0 9.5 8' key={index} className='w-4 h-4 mr-1'>
+                <div key={index}>
+                  <svg viewBox='0 0 9.5 8' className='w-4 h-4 mr-1'>
                     <defs>
                       <linearGradient id='ratingStarGradient' x1='50%' x2='50%' y1='0%' y2='100%'>
                         <stop offset={0} stopColor='#ffca11' />
@@ -123,13 +123,13 @@ export default function AsideFilter() {
             <span>Trởi lên</span>
           </Link>
         </li>
-        <li py-1 pl-2>
+        <li className='py-1 pl-2'>
           <Link to={path.home} className='flex items-center text-sm'>
             {Array(5)
               .fill(0)
               .map((_, index) => (
-                <div>
-                  <svg viewBox='0 0 9.5 8' key={index} className='w-4 h-4 mr-1'>
+                <div key={index}>
+                  <svg viewBox='0 0 9.5 8' className='w-4 h-4 mr-1'>
                     <defs>
                       <linearGradient id='ratingStarGradient' x1='50%' x2='50%' y1='0%' y2='100%'>
                         <stop offset={0} stopColor='#ffca11' />
