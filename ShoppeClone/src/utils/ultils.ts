@@ -5,3 +5,14 @@ export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
 export function isAxiosErrorHttpStatusCode<FormError>(error: unknown): error is AxiosError<FormError> {
   return isAxiosError(error) && error.response?.status === HttpStatusCode.UnprocessableEntity
 }
+
+export function formatCurrency(currency: number) {
+  return new Intl.NumberFormat('de-DE').format(currency)
+}
+
+export function formatNumberToSocialType(value: number) {
+  return new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 })
+    .format(value)
+    .replace('.', ',')
+    .toLowerCase()
+}

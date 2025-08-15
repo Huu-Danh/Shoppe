@@ -1,29 +1,31 @@
 import { Link } from 'react-router-dom'
 import path from 'src/constants/path'
-
-export default function Product() {
+import type { Product as ProductType } from 'src/types/product.type'
+import { formatCurrency, formatNumberToSocialType } from 'src/utils/ultils'
+interface Props {
+  product: ProductType
+}
+export default function Product({ product }: Props) {
   return (
     <Link to={path.home}>
       <div className='bg-white shadow rounded-sm hover:translate-y-[-0.04rem] hover:shadow-md duration-100 transition-transform overflow-hidden'>
         <div className='w-full pt-[100%] relative'>
           <img
-            src='https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lupvwpc810cyf9_tn'
-            alt=''
+            src={product.image}
+            alt={product.name}
             className='absolute top-0 left-0 bg-white w-full h-full object-cover'
           />
         </div>
         <div className='p-2 overflow-hiden'>
-          <div className='min-h-[2rem] line-clamp-2 text-xs'>
-            Thắt Lưng Nam Khóa Tự Động Cao Cấp Mặt Xoay Chính Hãng , Dây Nịt Nam Phong Cách Hàn Quốc
-          </div>
+          <div className='min-h-[2rem] line-clamp-2 text-xs'>{product.name}</div>
           <div className='flex items-center mt-3'>
             <div className='line-through max-w-[50%] text-gray-500 truncate'>
               <span className='text-xs'>₫</span>
-              <span>5.000</span>
+              <span>{formatCurrency(product.price_before_discount)}</span>
             </div>
             <div className='text-orange truncate'>
               <span className='text-xs'>₫</span>
-              <span>2.000</span>
+              <span>{formatCurrency(product.price)}</span>
             </div>
           </div>
           <div className='mt-3 flex items-center justify-end'>
@@ -74,7 +76,7 @@ export default function Product() {
               </div>
             </div>
             <div className='ml-2 text-sm'>
-              <span>5.6k</span>
+              <span>{formatNumberToSocialType(product.sold)}</span>
               <span className='ml-1'>Đã bán</span>
             </div>
           </div>
