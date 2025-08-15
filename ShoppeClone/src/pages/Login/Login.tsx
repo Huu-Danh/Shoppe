@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from 'src/apis/auth.api'
+import authApi from 'src/apis/auth.api'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import path from 'src/constants/path'
@@ -17,42 +17,36 @@ export default function Login() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     register,
     handleSubmit,
     setError,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors }
   } = useForm<FormData>({ resolver: yupResolver(loginSchema) })
   const loginMatation = useMutation({
-    mutationFn: (body: Omit<FormData, 'confirm_password'>) => login(body)
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.login(body)
   })
-  const onSubmit = handleSubmit(
-    (data) => {
-      loginMatation.mutate(data, {
-        onSuccess: (data) => {
-          setIsAuthenticated(true)
-          setProfile(data.data.data.user)
-          navigate('/')
-        },
-        onError: (error) => {
-          if (isAxiosErrorHttpStatusCode<ErrorResponse<FormData>>(error)) {
-            const formError = error.response?.data.data
-            if (formError) {
-              Object.keys(formError).forEach((key) => {
-                setError(key as keyof FormData, {
-                  message: formError[key as keyof FormData],
-                  type: 'Server'
-                })
+  const onSubmit = handleSubmit((data) => {
+    loginMatation.mutate(data, {
+      onSuccess: (data) => {
+        setIsAuthenticated(true)
+        setProfile(data.data.data.user)
+        navigate('/')
+      },
+      onError: (error) => {
+        if (isAxiosErrorHttpStatusCode<ErrorResponse<FormData>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof FormData, {
+                message: formError[key as keyof FormData],
+                type: 'Server'
               })
-            }
+            })
           }
         }
-      })
-    },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (data) => {}
-  )
+      }
+    })
+  })
   return (
     <div className='bg-orange'>
       <div className='max-w-7xl mx-auto px-4 '>

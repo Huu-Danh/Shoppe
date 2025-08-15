@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import Input from 'src/components/Input'
 import { schema, type Schema } from 'src/utils/rules'
-import { registerAccount } from 'src/apis/auth.api'
+import authApi from 'src/apis/auth.api'
 import { omit } from 'lodash'
 import { isAxiosErrorHttpStatusCode } from 'src/utils/ultils'
 import type { ErrorResponse } from 'src/types/ultil.type'
@@ -27,34 +26,31 @@ export default function Register() {
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
   const registerAccountMutaion = useMutation({
-    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body)
   })
-  const onSubmit = handleSubmit(
-    (data) => {
-      const body = omit(data, ['confirm_password'])
-      registerAccountMutaion.mutate(body, {
-        onSuccess: (data) => {
-          setIsAuthenticated(true)
-          setProfile(data.data.data.user)
-          navigate('/')
-        },
-        onError: (error) => {
-          if (isAxiosErrorHttpStatusCode<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
-            const formError = error.response?.data.data
-            if (formError) {
-              Object.keys(formError).forEach((key) => {
-                setError(key as keyof Omit<FormData, 'confirm_password'>, {
-                  message: formError[key as keyof Omit<FormData, 'confirm_password'>],
-                  type: 'Server'
-                })
+  const onSubmit = handleSubmit((data) => {
+    const body = omit(data, ['confirm_password'])
+    registerAccountMutaion.mutate(body, {
+      onSuccess: (data) => {
+        setIsAuthenticated(true)
+        setProfile(data.data.data.user)
+        navigate('/')
+      },
+      onError: (error) => {
+        if (isAxiosErrorHttpStatusCode<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof Omit<FormData, 'confirm_password'>, {
+                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
+                type: 'Server'
               })
-            }
+            })
           }
         }
-      })
-    },
-    (data) => {}
-  )
+      }
+    })
+  })
 
   return (
     <div className='bg-orange'>
